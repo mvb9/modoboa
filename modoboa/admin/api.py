@@ -17,7 +17,16 @@ from . import serializers
 
 
 class DomainViewSet(viewsets.ModelViewSet):
-    """ViewSet for Domain."""
+    """
+    retrieve:
+    Return the given domain.
+
+    list:
+    Return a list of all existing domains.
+
+    create:
+    Create a new domain instance.
+    """
 
     permission_classes = [IsAuthenticated, DjangoModelPermissions, ]
     serializer_class = serializers.DomainSerializer
@@ -111,35 +120,9 @@ class AccountViewSet(viewsets.ModelViewSet):
 
 
 class AliasViewSet(viewsets.ModelViewSet):
-    """ViewSet for Alias.
-
-    ---
+    """
     create:
-        serializer: modoboa.admin.serializers.AliasSerializer
-        parameters:
-            - name: recipients
-              description: recipient(s) of the alias
-              required: true
-              type: array[string]
-              paramType: form
-
-    update:
-        serializer: modoboa.admin.serializers.AliasSerializer
-        parameters:
-            - name: recipients
-              description: recipient(s) of the alias
-              required: true
-              type: array[string]
-              paramType: form
-
-    partial_update:
-        serializer: modoboa.admin.serializers.AliasSerializer
-        parameters:
-            - name: recipients
-              description: recipient(s) of the alias
-              required: true
-              type: array[string]
-              paramType: form
+    Create a new alias instance.
     """
 
     permission_classes = [IsAuthenticated, DjangoModelPermissions, ]

@@ -2,12 +2,15 @@
 
 from dateutil import parser
 import feedparser
+import requests
 
 from django.views import generic
 
 from django.contrib.auth import mixins as auth_mixins
 
 from .. import signals
+
+MODOBOA_WEBSITE_URL = "https://modoboa.org/"
 
 
 class DashboardView(auth_mixins.AccessMixin, generic.TemplateView):
@@ -32,14 +35,30 @@ class DashboardView(auth_mixins.AccessMixin, generic.TemplateView):
             lang = "fr"
         else:
             lang = "en"
-        posts = feedparser.parse(
-            "https://modoboa.org/{}/weblog/feeds/".format(lang))
+        context.update({"selection": "dashboard"})
+
+        feed_url = "{}{}/weblog/feeds/".format(MODOBOA_WEBSITE_URL, lang)
+        if self.request.user.role != "SuperAdmins":
+            custom_feed_url = (
+                self.request.localconfig.parameters.get_value("rss_feed_url"))
+            if custom_feed_url:
+                feed_url = custom_feed_url
+        posts = feedparser.parse(feed_url)
         entries = []
         for entry in posts["entries"][:5]:
             entry["published"] = parser.parse(entry["published"])
             entries.append(entry)
         context["widgets"]["left"].append("core/_latest_news_widget.html")
         context.update({"news": entries})
+
+        url = "{}{}/api/projects/?featured=true".format(
+            MODOBOA_WEBSITE_URL, lang)
+        response = requests.get(url)
+        if response.status_code == 200:
+            features = response.json()
+            context["widgets"]["right"].append("core/_current_features.html")
+            context.update({"features": features})
+
         # Extra widgets
         result = signals.extra_admin_dashboard_widgets.send(
             sender=self.__class__, user=self.request.user)
@@ -49,4 +68,5 @@ class DashboardView(auth_mixins.AccessMixin, generic.TemplateView):
                     widget["template"])
                 # FIXME: can raise conflicts...
                 context.update(widget["context"])
+
         return context

@@ -215,6 +215,16 @@ class GeneralParametersForm(param_forms.AdminParametersForm):
         required=False
     )
 
+    dash_sep = SeparatorField(label=ugettext_lazy("Dashboard"))
+
+    rss_feed_url = forms.URLField(
+        label=ugettext_lazy("Custom RSS feed"),
+        required=False,
+        help_text=ugettext_lazy(
+            "Display custom RSS feed to resellers and domain administrators"
+        )
+    )
+
     notif_sep = SeparatorField(label=ugettext_lazy("Notifications"))
 
     sender_address = lib_fields.UTF8EmailField(

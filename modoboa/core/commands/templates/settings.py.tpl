@@ -48,8 +48,10 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.staticfiles',
     'reversion',
+    'ckeditor',
+    'ckeditor_uploader',
+    'rest_framework',
     'rest_framework.authtoken',
-    'rest_framework_swagger',
 {% if devmode %}    'djangobower',{% endif %}
 )
 
@@ -165,25 +167,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     ),
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
-    )
-}
-
-SWAGGER_SETTINGS = {
-    "is_authenticated": False,
-    "api_version": "1.0",
-    "exclude_namespaces": [],
-    "info": {
-        "contact": "contact@modoboa.com",
-        "description": (
-            "Modoboa API, requires a valid token. To obtain a token, login "
-            "as super administrator, go to 'User settings > API' and enable "
-            "API access. Click on 'Update' and wait for page refresh."
-        ),
-        "title": "Modoboa API documentation",
-    }
 }
 
 # Modoboa settings
@@ -201,6 +186,38 @@ PASSWORD_COMPLEXITY = {
     "UPPER": 1,
     "LOWER": 1,
     "DIGITS": 1
+}
+
+# CKeditor
+
+CKEDITOR_UPLOAD_PATH = "uploads/"
+
+CKEDITOR_IMAGE_BACKEND = "pillow"
+
+CKEDITOR_RESTRICT_BY_USER = True
+
+CKEDITOR_BROWSE_SHOW_DIRS = True
+
+CKEDITOR_ALLOW_NONIMAGE_FILES = False
+
+CKEDITOR_CONFIGS = {
+    'default': {
+        'allowedContent': True,
+        'toolbar': 'Modoboa',
+        'width': None,
+        'toolbar_Modoboa': [
+            ['Bold', 'Italic', 'Underline'],
+            ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
+            ['BidiLtr', 'BidiRtl', 'Language'],
+            ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent'],
+            ['Undo', 'Redo'],
+            ['Link', 'Unlink', 'Anchor', '-', 'Smiley'],
+            ['TextColor', 'BGColor', '-', 'Source'],
+            ['Font', 'FontSize'],
+            ['Image', ],
+            ['SpellChecker']
+        ],
+    },
 }
 
 # Logging configuration
